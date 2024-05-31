@@ -7,27 +7,25 @@
 namespace FxCop.Setup
 {
     using System.Threading;
+    using System.Threading.Tasks;
 
-    internal class Program
+    internal static class Program
     {
-        private static readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
+        private static readonly CancellationTokenSource CancellationTokenSource = new();
 
-        private static async void DownloadAndInstallCodeMetricsPowerTool11()
+        private static async Task DownloadAndInstallCodeMetricsPowerTool11Async()
         {
-            const string Url = @"http://download.microsoft.com/download/A/2/5/A25566FE-CF42-409B-BCCE-1F8DC1A81D8A/MetricsPowerTool.exe";
-            using (IFileReference sfxCabinetTemporaryFile = FxCopSetup.TryDownloadSfxPackage(Url))
-            {
-                if (sfxCabinetTemporaryFile != null)
-                {
-                    CancellationToken cancellationToken = CancellationTokenSource.Token;
-                    await FxCopSetup.InstallCodeMetricsPowerTool(sfxCabinetTemporaryFile.FullName, cancellationToken);
-                }
-            }
+            const string url = "http://download.microsoft.com/download/A/2/5/A25566FE-CF42-409B-BCCE-1F8DC1A81D8A/MetricsPowerTool.exe";
+            using IFileReference? sfxCabinetTemporaryFile = FxCopSetup.TryDownloadSfxPackage(url);
+            if (sfxCabinetTemporaryFile == null) return;
+
+            CancellationToken cancellationToken = CancellationTokenSource.Token;
+            await FxCopSetup.InstallCodeMetricsPowerToolAsync(sfxCabinetTemporaryFile.FullName, cancellationToken);
         }
 
-        private static void Main()
+        private static async Task Main()
         {
-            DownloadAndInstallCodeMetricsPowerTool11();
+            await DownloadAndInstallCodeMetricsPowerTool11Async();
         }
     }
 }

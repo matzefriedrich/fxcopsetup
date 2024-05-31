@@ -6,6 +6,7 @@
 
 namespace FxCop.Setup
 {
+    using System;
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
 
@@ -13,7 +14,8 @@ namespace FxCop.Setup
     {
         public static string GetPublicKeyFrom(string signedFile)
         {
-            X509Certificate cert = X509Certificate.CreateFromSignedFile(signedFile);
+            if (string.IsNullOrWhiteSpace(signedFile)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(signedFile));
+            var cert = X509Certificate.CreateFromSignedFile(signedFile);
             return ExtractPublicKey(cert);
         }
 
@@ -21,10 +23,7 @@ namespace FxCop.Setup
         {
             byte[] publicKey = cert.GetPublicKey();
             var sb = new StringBuilder();
-            foreach (byte next in publicKey)
-            {
-                sb.AppendFormat("{0:x2}", next);
-            }
+            foreach (byte next in publicKey) sb.AppendFormat("{0:x2}", next);
 
             return sb.ToString();
         }

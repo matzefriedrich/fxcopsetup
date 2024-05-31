@@ -11,8 +11,6 @@ namespace FxCop.Setup
 
     internal class TemporaryFileReference : IFileReference
     {
-        private readonly string file;
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="TemporaryFileReference" /> class.
         /// </summary>
@@ -21,20 +19,16 @@ namespace FxCop.Setup
         /// </param>
         public TemporaryFileReference(string file)
         {
-            if (string.IsNullOrEmpty(file))
-            {
-                throw new ArgumentNullException("file");
-            }
+            if (string.IsNullOrEmpty(file)) throw new ArgumentNullException(nameof(file));
 
-            this.file = file;
+            this.FullName = file;
         }
 
         public void Dispose()
         {
             try
             {
-
-                File.Delete(this.file);
+                File.Delete(this.FullName);
             }
             catch
             {
@@ -44,9 +38,6 @@ namespace FxCop.Setup
         /// <summary>
         ///     Gets a value indicating the absolute path of the file.
         /// </summary>
-        public string FullName
-        {
-            get { return this.file; }
-        }
+        public string FullName { get; }
     }
 }
